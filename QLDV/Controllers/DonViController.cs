@@ -32,7 +32,7 @@ namespace QLDV.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
+        // lay don vi theo id 
         [HttpGet("{id}")]
         public IActionResult GetAllSubordinates(int id)
         {

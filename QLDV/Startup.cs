@@ -43,6 +43,8 @@ namespace QLDV
             });
             services.AddScoped<LoaiDonViInterface, LoaiDonViRepository>();
             services.AddScoped<DonViInterface, DonViRepository>();
+            services.AddScoped<CanBoInterface, CanBoRepository>();
+
 
 
 

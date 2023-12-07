@@ -17,6 +17,7 @@ namespace QLDV.Services
         {
             _context = context;
         }
+        #region them don vi 
         public DonViView Add(DonViView DonVi)
         {
 
@@ -44,7 +45,8 @@ namespace QLDV.Services
                  LoaiDv= _DonVi.IdLoaiDvNavigation.TenNhom
             };
         }
-
+        #endregion
+        #region delete 
         public void Delete(int id)
         {
             var DonVi = _context.DonVis.SingleOrDefault(lo => lo.Id == id);
@@ -54,7 +56,8 @@ namespace QLDV.Services
                 _context.SaveChanges();
             }
         }
-
+        #endregion
+        #region all 
         public List<DonViView> GetAll()
         {
             var DonVis = _context.DonVis.Select(l => new DonViView
@@ -73,8 +76,9 @@ namespace QLDV.Services
             });
             return DonVis.ToList();
         }
+        #endregion
 
-
+        #region lay don vi theo id 
 
         public DonViView GetByID(int id)
         {
@@ -110,35 +114,99 @@ namespace QLDV.Services
             return null;
         }
 
-
+        #endregion
+        #region update donvi 
         public void Update(DonViView DonVi)
         {
             var _DonVi = _context.DonVis.SingleOrDefault(lo => lo.Id == DonVi.Id);
             _DonVi.Ten = DonVi.Ten;
             _DonVi.Sdt = DonVi.Sdt;
             _DonVi.DiaChi = DonVi.DiaChi;
-            _DonVi.IdCapTrenNavigation = _context.DonVis.SingleOrDefault(lo => lo.Ten == DonVi.CapTren);
-            _DonVi.IdLoaiDvNavigation = _context.LoaiDonVis.SingleOrDefault(lo => lo.TenNhom == DonVi.LoaiDv);
+            _DonVi.IdCapTren = _context.DonVis
+                    .Where(lo => lo.Ten == DonVi.CapTren)
+                    .Select(lo => lo.Id)
+                    .SingleOrDefault();
+            _DonVi.IdLoaiDv = _context.LoaiDonVis
+                   .Where(lo => lo.TenNhom == DonVi.LoaiDv)
+                   .Select(lo => lo.Id)
+                   .SingleOrDefault();
 
             _context.SaveChanges();
         }
-
+        #endregion
+        #region Lay cap duoi cua don vi 
         public List<DonViView> GetAllSubordinates(int id)
         {
             var subordinates = new List<DonViView>();
 
             // Lấy đơn vị dựa trên ID
-            var unit = _context.DonVis.SingleOrDefault(d => d.Id == id);
-            //var unit = _context.DonVis.FromSqlRaw("EXEC ListChildDonVi {0}", id).ToList();
+            //var unit = _context.DonVis.SingleOrDefault(d => d.Id == id);
+            var unit = _context.DonVis.FromSqlRaw("EXEC ListChildDonVi {0}",id).ToList();
 
 
             if (unit != null)
             {
-                var subordinateunits = GetSubordinateUnits(unit);
+                //var subordinateunits = GetSubordinateUnits(unit);
 
-                foreach (var subUnit in subordinateunits)
+                foreach (var subUnit in unit)
+                {
+                    var CapTren = _context.DonVis
+                                       .Where(lo => lo.Id == subUnit.IdCapTren)
+                                       .Select(lo => lo.Ten)
+                                       .SingleOrDefault();
+
+                    var LoaiDV = _context.LoaiDonVis
+                   .Where(lo => lo.Id == subUnit.IdLoaiDv)
+                   .Select(lo => lo.TenNhom)
+                   .SingleOrDefault();
+                    subordinates.Add(new DonViView
+                    {
+                        Id = subUnit.Id,
+                        Ten = subUnit.Ten,
+                        Sdt = subUnit.Sdt,
+                        DiaChi = subUnit.DiaChi,
+                        CapTren = CapTren,
+                        LoaiDv = LoaiDV
+                    });           
+                }
+            }
+
+            return subordinates;
+        }
+        #endregion
+        //private IEnumerable<DonVi> GetSubordinateUnits(DonVi unit)
+        //{
+        //    // Lấy tất cả các đơn vị cấp dưới của unit hiện tại
+        //    return _context.DonVis
+        //        .Include(d => d.IdLoaiDvNavigation)
+        //        .Where(d => d.IdCapTren == unit.Id).ToList();
+        //}
+        #region Search 
+        public List<DonViView> Search(string search)
+        {
+            var subordinates = new List<DonViView>();
+
+            // Lấy đơn vị dựa trên ID
+            //var unit = _context.DonVis.SingleOrDefault(d => d.Id == id);
+            var unit = _context.DonVis.FromSqlRaw("EXEC SearchDonVi {0}", search).ToList();
+
+
+            if (unit != null)
+            {
+                //var subordinateunits = GetSubordinateUnits(unit);
+
+                foreach (var subUnit in unit)
                 {
 
+                    var capTren = _context.DonVis
+                    .Where(lo => lo.Id == subUnit.IdCapTren)
+                    .Select(lo => lo.Ten)
+                    .SingleOrDefault();
+
+                    var LoaiDV = _context.LoaiDonVis
+                   .Where(lo => lo.Id == subUnit.IdLoaiDv)
+                   .Select(lo => lo.TenNhom)
+                   .SingleOrDefault();
 
                     subordinates.Add(new DonViView
                     {
@@ -146,81 +214,15 @@ namespace QLDV.Services
                         Ten = subUnit.Ten,
                         Sdt = subUnit.Sdt,
                         DiaChi = subUnit.DiaChi,
-                        CapTren = subUnit.IdCapTrenNavigation.Ten,
-                        LoaiDv = subUnit.IdLoaiDvNavigation.TenNhom
+                        CapTren = capTren,
+                        LoaiDv = LoaiDV
                     });
-
-                    //Gọi đệ quy để lấy các cấp dưới của subUnit
-                    var subordinatesOfSubUnit = GetAllSubordinates(subUnit.Id);
-                    if (subordinatesOfSubUnit.Any())
-                    {
-                        subordinates.AddRange(subordinatesOfSubUnit);
-                    }
                 }
             }
 
             return subordinates;
         }
-
-        private IEnumerable<DonVi> GetSubordinateUnits(DonVi unit)
-        {
-            // Lấy tất cả các đơn vị cấp dưới của unit hiện tại
-            return _context.DonVis
-                .Include(d => d.IdLoaiDvNavigation)
-                .Where(d => d.IdCapTren == unit.Id).ToList();
-        }
-        #region Search 
-        public List<DonViView> Search(string search)
-        {
-            var subordinates = new List<DonViView>();
-
-            // Lấy đơn vị dựa trên ID
-
-
-
-            var subordinateUnits = SearchAll(search);
-
-            foreach (var subUnit in subordinateUnits)
-            {
-
-
-                subordinates.Add(new DonViView
-                {
-                    Id = subUnit.Id,
-                    Ten = subUnit.Ten,
-                    Sdt = subUnit.Sdt,
-                    DiaChi = subUnit.DiaChi,
-                    CapTren = subUnit.IdCapTrenNavigation.Ten,
-                    LoaiDv = subUnit.IdLoaiDvNavigation.TenNhom
-                });
-
-
-
-            }
-
-
-            return subordinates;
-        }
-        private IEnumerable<DonVi> SearchAll(string searchKeyword)
-        {
-            // Chuyển đổi kí tự nhập vào sang chữ thường để thực hiện tìm kiếm không phân biệt hoa thường
-            string lowercaseKeyword = searchKeyword.ToLower();
-
-            var subordinateUnits = _context.DonVis
-                .Include(d => d.IdLoaiDvNavigation)
-                 .Include(d => d.IdCapTrenNavigation)
-                .Where(d => (d.Ten.ToLower().Contains(lowercaseKeyword)
-                                                        || d.Sdt.ToLower().Contains(lowercaseKeyword)
-                                                        || d.DiaChi.ToLower().Contains(lowercaseKeyword)
-                                                        || d.IdCapTrenNavigation.Ten.ToLower().Contains(lowercaseKeyword)
-                                                        || d.IdLoaiDvNavigation.TenNhom.ToLower().Contains(lowercaseKeyword)
-                                                       // Thêm các trường cần tìm kiếm ở đây tương ứng với mô hình của bạn
-                                                       ))
-                .ToList();
-
-
-            return subordinateUnits;
-        }
+     
         #endregion
         #region Loai don vi 
 
@@ -229,33 +231,38 @@ namespace QLDV.Services
             var subordinates = new List<DonViView>();
 
             // Lấy đơn vị dựa trên ID
-            var subordinateUnits = _context.DonVis
-               .Include(d => d.IdLoaiDvNavigation)
-                 .Include(d => d.IdCapTrenNavigation)
-
-                .Where(d => d.IdLoaiDv == id).ToList();
-            List<DonVi> donvis = _context.DonVis.FromSqlRaw("EXEC SearchDonVi {0}", id).ToList();
+            //var unit = _context.DonVis.SingleOrDefault(d => d.Id == id);
+            var unit = _context.DonVis.FromSqlRaw("EXEC GetAllDonVisToLDV {0}", id).ToList();
 
 
-
-            foreach (var subUnit in subordinateUnits)
+            if (unit != null)
             {
+                //var subordinateunits = GetSubordinateUnits(unit);
 
-
-                subordinates.Add(new DonViView
+                foreach (var subUnit in unit)
                 {
-                    Id = subUnit.Id,
-                    Ten = subUnit.Ten,
-                    Sdt = subUnit.Sdt,
-                    DiaChi = subUnit.DiaChi,
-                    CapTren = subUnit.IdCapTrenNavigation.Ten,
-                    LoaiDv = subUnit.IdLoaiDvNavigation.TenNhom
-                });
 
-                // Gọi đệ quy để lấy các cấp dưới của subUnit
+                    var CapTren = _context.DonVis
+                    .Where(lo => lo.Id == subUnit.IdCapTren)
+                    .Select(lo => lo.Ten)
+                    .SingleOrDefault();
 
+                    var LoaiDV = _context.LoaiDonVis
+                   .Where(lo => lo.Id == subUnit.IdLoaiDv)
+                   .Select(lo => lo.TenNhom)
+                   .SingleOrDefault();
+
+                    subordinates.Add(new DonViView
+                    {
+                        Id = subUnit.Id,
+                        Ten = subUnit.Ten,
+                        Sdt = subUnit.Sdt,
+                        DiaChi = subUnit.DiaChi,
+                        CapTren = CapTren,
+                        LoaiDv = LoaiDV
+                    });
+                }
             }
-
 
             return subordinates;
         }
