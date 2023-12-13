@@ -13,7 +13,7 @@ namespace QLDV.Models
             CanBoes = new HashSet<CanBo>();
             HocViens = new HashSet<HocVien>();
             InverseIdCapTrenNavigation = new HashSet<DonVi>();
-            ThieBis = new HashSet<ThieBi>();
+            ThietBis = new HashSet<ThietBi>();
         }
 
         public int Id { get; set; }
@@ -30,6 +30,6 @@ namespace QLDV.Models
         public virtual ICollection<CanBo> CanBoes { get; set; }
         public virtual ICollection<HocVien> HocViens { get; set; }
         public virtual ICollection<DonVi> InverseIdCapTrenNavigation { get; set; }
-        public virtual ICollection<ThieBi> ThieBis { get; set; }
+        public virtual ICollection<ThietBi> ThietBis { get; set; }
     }
 }

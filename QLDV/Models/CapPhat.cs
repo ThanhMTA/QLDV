@@ -14,6 +14,6 @@ namespace QLDV.Models
         public int? ThietBiId { get; set; }
 
         public virtual DonVi DonVi { get; set; }
-        public virtual ThieBi ThietBi { get; set; }
+        public virtual ThietBi ThietBi { get; set; }
     }
 }

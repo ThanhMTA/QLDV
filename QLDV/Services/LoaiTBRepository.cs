@@ -20,7 +20,13 @@ namespace QLDV.Services
         public void Add(LoaiTBView loai)
         {
             var tenLoai = loai.TenLoai;
-            _context.Database.ExecuteSqlInterpolated($"exec AddLoaiTB {tenLoai}");
+            var donvi = loai.donvi;
+            var idNhomTB = _context.NhomTbs
+                     .Where(lo => lo.TenNhom == loai.TenNhomTB)
+                     .Select(lo => lo.Id)
+                     .SingleOrDefault();
+
+            _context.Database.ExecuteSqlInterpolated($"exec AddLoaiTB {tenLoai},{idNhomTB},{donvi}");
         }
 
 
@@ -43,6 +49,8 @@ namespace QLDV.Services
                 {
                     Id = subUnit.Id,
                     TenLoai = subUnit.TenLoai,
+                    donvi=subUnit.donvi,
+                    soLuong=subUnit.soLuong,
                     TenNhomTB = _context.NhomTbs
                     .Where(lo => lo.Id == subUnit.IdNhomTb)
                     .Select(lo => lo.TenNhom)
@@ -73,6 +81,8 @@ namespace QLDV.Services
                 {
                     Id = subUnit.Id,
                     TenLoai = subUnit.TenLoai,
+                    donvi = subUnit.donvi,
+                    soLuong = subUnit.soLuong,
                     TenNhomTB = _context.NhomTbs
                     .Where(lo => lo.Id == subUnit.IdNhomTb)
                     .Select(lo => lo.TenNhom)
@@ -90,12 +100,13 @@ namespace QLDV.Services
         public void Update(LoaiTBView loai)
         {
             var tenLoai = loai.TenLoai;
+            var donvi = loai.donvi;
             var idNhomTB = _context.NhomTbs
                     .Where(lo => lo.TenNhom == loai.TenNhomTB)
                     .Select(lo => lo.Id)
                     .SingleOrDefault();
             var id = loai.Id;
-            _context.Database.ExecuteSqlInterpolated($"exec UpdateLoaiTB {id}, {tenLoai},{idNhomTB}");
+            _context.Database.ExecuteSqlInterpolated($"exec UpdateLoaiTB {id}, {tenLoai},{idNhomTB},{donvi}");
         }
     }
 }

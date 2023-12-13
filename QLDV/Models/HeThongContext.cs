@@ -28,7 +28,7 @@ namespace QLDV.Models
         public virtual DbSet<Khhl> Khhls { get; set; }
         public virtual DbSet<KhoaHoc> KhoaHocs { get; set; }
         public virtual DbSet<LoaiDonVi> LoaiDonVis { get; set; }
-        public virtual DbSet<LoaiTb> LoaiTbs { get; set; }
+      
         public virtual DbSet<LopHoc> LopHocs { get; set; }
         public virtual DbSet<MonHoc> MonHocs { get; set; }
         public virtual DbSet<NamHoc> NamHocs { get; set; }
@@ -41,7 +41,7 @@ namespace QLDV.Models
         public virtual DbSet<QuyenNhom> QuyenNhoms { get; set; }
         public virtual DbSet<QuyenTk> QuyenTks { get; set; }
         public virtual DbSet<TaiKhoan> TaiKhoans { get; set; }
-        public virtual DbSet<ThieBi> ThieBis { get; set; }
+        public virtual DbSet<ThietBi> ThietBis { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -345,21 +345,7 @@ namespace QLDV.Models
                 entity.Property(e => e.TenNhom).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<LoaiTb>(entity =>
-            {
-                entity.ToTable("LoaiTB");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.IdNhomTb).HasColumnName("IdNhomTB");
-
-                entity.Property(e => e.TenLoai).HasMaxLength(50);
-
-                entity.HasOne(d => d.IdNhomTbNavigation)
-                    .WithMany(p => p.LoaiTbs)
-                    .HasForeignKey(d => d.IdNhomTb)
-                    .HasConstraintName("FK_LoaiTB_NhomTB");
-            });
+            
 
             modelBuilder.Entity<LopHoc>(entity =>
             {
@@ -578,9 +564,9 @@ namespace QLDV.Models
                     .HasConstraintName("FK_TaiKhoan_CanBo");
             });
 
-            modelBuilder.Entity<ThieBi>(entity =>
+            modelBuilder.Entity<ThietBi>(entity =>
             {
-                entity.ToTable("ThieBi");
+                entity.ToTable("ThietBi");
 
                 entity.Property(e => e.Id).HasColumnName("ID");
 
@@ -589,14 +575,20 @@ namespace QLDV.Models
                 entity.Property(e => e.TenTb)
                     .HasMaxLength(50)
                     .HasColumnName("tenTB");
+                entity.Property(e => e.soLuong)
+                    .HasColumnName("soLuong");
+                  
+                entity.Property(e => e.donvi)
+                    .HasMaxLength(50)
+                     .HasColumnName("donvi");
 
                 entity.HasOne(d => d.IdDonViNavigation)
-                    .WithMany(p => p.ThieBis)
+                    .WithMany(p => p.ThietBis)
                     .HasForeignKey(d => d.IdDonVi)
                     .HasConstraintName("FK_ThieBi_DonVi");
 
                 entity.HasOne(d => d.IdLoaiTbNavigation)
-                    .WithMany(p => p.ThieBis)
+                    .WithMany(p => p.ThietBis)
                     .HasForeignKey(d => d.IdLoaiTb)
                     .HasConstraintName("FK_ThieBi_LoaiTB");
             });

@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 
 namespace QLDV.Views
 {
-    public class LoaiTBView
+    public class ThietBiView
     {
         public int Id { get; set; }
-        public string TenLoai { get; set; }
-        public string TenNhomTB { get; set; }
+        public string TenTb { get; set; }
+        public string LoaiTb { get; set; }
+        public string DonVi { get; set; }
         public string donvi { get; set; }
         public int soLuong { get; set; }
 
