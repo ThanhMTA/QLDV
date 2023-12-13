@@ -19,7 +19,6 @@ namespace QLDV.Models
 
         public virtual DbSet<BaiHoc> BaiHocs { get; set; }
         public virtual DbSet<CanBo> CanBoes { get; set; }
-        public virtual DbSet<CapPhat> CapPhats { get; set; }
         public virtual DbSet<ChuyenCan> ChuyenCans { get; set; }
         public virtual DbSet<Diem> Diems { get; set; }
         public virtual DbSet<DonVi> DonVis { get; set; }
@@ -117,31 +116,6 @@ namespace QLDV.Models
                     .WithMany(p => p.CanBoes)
                     .HasForeignKey(d => d.IdDonVi)
                     .HasConstraintName("FK_CanBo_DonVi");
-            });
-
-            modelBuilder.Entity<CapPhat>(entity =>
-            {
-                entity.ToTable("CapPhat");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.DonViId).HasColumnName("DonViID");
-
-                entity.Property(e => e.NgayCap).HasColumnType("datetime");
-
-                entity.Property(e => e.NgayHetHan).HasColumnType("datetime");
-
-                entity.Property(e => e.ThietBiId).HasColumnName("ThietBiID");
-
-                entity.HasOne(d => d.DonVi)
-                    .WithMany(p => p.CapPhats)
-                    .HasForeignKey(d => d.DonViId)
-                    .HasConstraintName("FK_CapPhat_DonVi");
-
-                entity.HasOne(d => d.ThietBi)
-                    .WithMany(p => p.CapPhats)
-                    .HasForeignKey(d => d.ThietBiId)
-                    .HasConstraintName("FK_CapPhat_ThieBi");
             });
 
             modelBuilder.Entity<ChuyenCan>(entity =>
@@ -615,6 +589,11 @@ namespace QLDV.Models
                 entity.Property(e => e.TenTb)
                     .HasMaxLength(50)
                     .HasColumnName("tenTB");
+
+                entity.HasOne(d => d.IdDonViNavigation)
+                    .WithMany(p => p.ThieBis)
+                    .HasForeignKey(d => d.IdDonVi)
+                    .HasConstraintName("FK_ThieBi_DonVi");
 
                 entity.HasOne(d => d.IdLoaiTbNavigation)
                     .WithMany(p => p.ThieBis)

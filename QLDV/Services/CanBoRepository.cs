@@ -95,6 +95,7 @@ namespace QLDV.Services
                                           .SingleOrDefault();
                     subordinates.Add(new CanBoView
                     {
+                        Id= subUnit.Id, 
                         Ten = subUnit.Ten,
                         Sdt = subUnit.Sdt,
                         Quequan = subUnit.Quequan,
