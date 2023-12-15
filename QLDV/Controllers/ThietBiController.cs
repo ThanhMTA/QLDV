@@ -11,21 +11,21 @@ namespace QLDV.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoaiTBController : ControllerBase
+    public class ThietBiController : ControllerBase
     {
-        private readonly LoaiTBInterface _LoaiTBRepository;
+        private readonly ThietBiInterface _ThietBiRepository;
 
-        public LoaiTBController(LoaiTBInterface LoaiTBRepository)
+        public ThietBiController(ThietBiInterface ThietBiRepository)
         {
-            _LoaiTBRepository = LoaiTBRepository;
+            _ThietBiRepository = ThietBiRepository;
 
         }
         [HttpPost]
-        public IActionResult Add(LoaiTBView loai)
+        public IActionResult Add(ThietBiView loai)
         {
             try
             {
-                _LoaiTBRepository.Add(loai);
+                _ThietBiRepository.Add(loai);
                 return Ok();
             }
             catch
@@ -38,7 +38,7 @@ namespace QLDV.Controllers
         {
             try
             {
-                return Ok(_LoaiTBRepository.GetAll());
+                return Ok(_ThietBiRepository.GetAll());
             }
             catch
             {
@@ -46,7 +46,7 @@ namespace QLDV.Controllers
             }
         }
         [HttpPut("{id}")]
-        public IActionResult Update(int id, LoaiTBView loai)
+        public IActionResult Update(int id, ThietBiView loai)
         {
             if (id != loai.Id)
             {
@@ -54,7 +54,7 @@ namespace QLDV.Controllers
             }
             try
             {
-                _LoaiTBRepository.Update(loai);
+                _ThietBiRepository.Update(loai);
                 return NoContent();
             }
             catch
@@ -67,7 +67,7 @@ namespace QLDV.Controllers
         {
             try
             {
-                _LoaiTBRepository.Delete(id);
+                _ThietBiRepository.Delete(id);
                 return Ok();
             }
             catch
@@ -80,19 +80,19 @@ namespace QLDV.Controllers
         {
             try
             {
-                return Ok(_LoaiTBRepository.Search(search));
+                return Ok(_ThietBiRepository.Search(search));
             }
             catch
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-        [HttpGet("Filter/{id}")]
-        public IActionResult Filter(int id)
+        [HttpGet("Filter/{idLoaiTB}/{idDV}")]
+        public IActionResult Filter(int idLoaiTB, int idDV)
         {
             try
             {
-                return Ok(_LoaiTBRepository.Filter(id));
+                return Ok(_ThietBiRepository.Filter(idLoaiTB,idDV));
             }
             catch
             {

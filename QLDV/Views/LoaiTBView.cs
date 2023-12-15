@@ -10,8 +10,8 @@ namespace QLDV.Views
         public int Id { get; set; }
         public string TenLoai { get; set; }
         public string TenNhomTB { get; set; }
-        public string donvi { get; set; }
-        public int soLuong { get; set; }
+        public string DonviTinh { get; set; }
+        public int ? SoLuong { get; set; }
 
 
     }

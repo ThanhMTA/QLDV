@@ -46,6 +46,8 @@ namespace QLDV
             services.AddScoped<CanBoInterface, CanBoRepository>();
             services.AddScoped<NhomTBInterface, NhomTBRepository>();
             services.AddScoped<LoaiTBInterface, LoaiTBRepository>();
+            services.AddScoped<ThietBiInterface, ThietBiRepository>();
+
 
 
 

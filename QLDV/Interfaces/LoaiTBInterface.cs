@@ -9,6 +9,7 @@ namespace QLDV.Interfaces
     public interface LoaiTBInterface
     {
         List<LoaiTBView> GetAll();
+        List<LoaiTBView> Filter(int id);
         void Add(LoaiTBView loai);
         void Update(LoaiTBView loai);
         void Delete(int id);

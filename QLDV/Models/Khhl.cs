@@ -10,7 +10,7 @@ namespace QLDV.Models
         public Khhl()
         {
             ChuyenCans = new HashSet<ChuyenCan>();
-            MonHocs = new HashSet<MonHoc>();
+            Diems = new HashSet<Diem>();
         }
 
         public int Id { get; set; }
@@ -21,7 +21,8 @@ namespace QLDV.Models
         public int? DonViId { get; set; }
         public DateTime? NgayLap { get; set; }
 
+        public virtual DonVi DonVi { get; set; }
         public virtual ICollection<ChuyenCan> ChuyenCans { get; set; }
-        public virtual ICollection<MonHoc> MonHocs { get; set; }
+        public virtual ICollection<Diem> Diems { get; set; }
     }
 }

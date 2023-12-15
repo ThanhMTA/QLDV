@@ -9,9 +9,6 @@ namespace QLDV.Models
     {
         public CanBo()
         {
-            LopHocGiaoVienChinhs = new HashSet<LopHoc>();
-            LopHocGiaoViens = new HashSet<LopHoc>();
-            NoiDungs = new HashSet<NoiDung>();
             TaiKhoans = new HashSet<TaiKhoan>();
         }
 
@@ -28,9 +25,6 @@ namespace QLDV.Models
         public int? IdDonVi { get; set; }
 
         public virtual DonVi IdDonViNavigation { get; set; }
-        public virtual ICollection<LopHoc> LopHocGiaoVienChinhs { get; set; }
-        public virtual ICollection<LopHoc> LopHocGiaoViens { get; set; }
-        public virtual ICollection<NoiDung> NoiDungs { get; set; }
         public virtual ICollection<TaiKhoan> TaiKhoans { get; set; }
     }
 }

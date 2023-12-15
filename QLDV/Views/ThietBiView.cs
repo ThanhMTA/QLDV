@@ -11,8 +11,8 @@ namespace QLDV.Views
         public string TenTb { get; set; }
         public string LoaiTb { get; set; }
         public string DonVi { get; set; }
-        public string donvi { get; set; }
-        public int soLuong { get; set; }
+        public string donviTinh { get; set; }
+        public int? soLuong { get; set; }
 
 
     }

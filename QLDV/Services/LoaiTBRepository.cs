@@ -20,7 +20,7 @@ namespace QLDV.Services
         public void Add(LoaiTBView loai)
         {
             var tenLoai = loai.TenLoai;
-            var donvi = loai.donvi;
+            var donvi = loai.DonviTinh;
             var idNhomTB = _context.NhomTbs
                      .Where(lo => lo.TenNhom == loai.TenNhomTB)
                      .Select(lo => lo.Id)
@@ -49,8 +49,8 @@ namespace QLDV.Services
                 {
                     Id = subUnit.Id,
                     TenLoai = subUnit.TenLoai,
-                    donvi=subUnit.donvi,
-                    soLuong=subUnit.soLuong,
+                    DonviTinh=subUnit.Donvi,
+                    SoLuong = subUnit.SoLuong,
                     TenNhomTB = _context.NhomTbs
                     .Where(lo => lo.Id == subUnit.IdNhomTb)
                     .Select(lo => lo.TenNhom)
@@ -62,6 +62,34 @@ namespace QLDV.Services
             }
             return subordinates;
         }
+        #region filter
+        public List<LoaiTBView> Filter(int id)
+        {
+            var subordinates = new List<LoaiTBView>();
+
+       
+            var loais = _context.LoaiTbs.FromSqlRaw("FilterLoaiTB {0}",id).ToList();
+
+            foreach (var subUnit in loais)
+            {
+               subordinates.Add(new LoaiTBView
+                {
+                    Id = subUnit.Id,
+                    TenLoai = subUnit.TenLoai,
+                    DonviTinh = subUnit.Donvi,
+                    SoLuong = subUnit.SoLuong,
+                    TenNhomTB = _context.NhomTbs
+                    .Where(lo => lo.Id == subUnit.IdNhomTb)
+                    .Select(lo => lo.TenNhom)
+                    .SingleOrDefault()
+                });
+
+
+
+            }
+            return subordinates;
+        }
+        #endregion
 
         public List<LoaiTBView> Search(string search)
         {
@@ -81,8 +109,8 @@ namespace QLDV.Services
                 {
                     Id = subUnit.Id,
                     TenLoai = subUnit.TenLoai,
-                    donvi = subUnit.donvi,
-                    soLuong = subUnit.soLuong,
+                    //donvi = subUnit.donvi,
+                    //soLuong = subUnit.soLuong,
                     TenNhomTB = _context.NhomTbs
                     .Where(lo => lo.Id == subUnit.IdNhomTb)
                     .Select(lo => lo.TenNhom)
@@ -100,13 +128,17 @@ namespace QLDV.Services
         public void Update(LoaiTBView loai)
         {
             var tenLoai = loai.TenLoai;
-            var donvi = loai.donvi;
+            var donvi = loai.DonviTinh;
             var idNhomTB = _context.NhomTbs
-                    .Where(lo => lo.TenNhom == loai.TenNhomTB)
-                    .Select(lo => lo.Id)
-                    .SingleOrDefault();
+                                .Where(lo => lo.TenNhom == loai.TenNhomTB)
+                                .Select(lo => lo.Id)
+                                .SingleOrDefault();
             var id = loai.Id;
-            _context.Database.ExecuteSqlInterpolated($"exec UpdateLoaiTB {id}, {tenLoai},{idNhomTB},{donvi}");
+
+            // Sử dụng tham số hóa để tránh lỗ hổng SQL Injection
+            _context.Database.ExecuteSqlInterpolated(
+                $"exec UpdateLoaiTB {id}, {tenLoai}, {idNhomTB}, {donvi}");
         }
+
     }
 }
