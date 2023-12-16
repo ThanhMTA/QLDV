@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace QLDV.Views
+namespace QLDV.Models
 {
-    public class HocVienView
+    public class DiemHV
     {
         public int Id { get; set; }
         public string Ten { get; set; }
@@ -17,6 +17,5 @@ namespace QLDV.Views
         public string DonVi { get; set; }
         public double? Diem { get; set; }
         public int Comat { get; set; }
-
     }
 }
