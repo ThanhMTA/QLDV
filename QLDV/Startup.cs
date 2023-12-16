@@ -48,6 +48,8 @@ namespace QLDV
             services.AddScoped<LoaiTBInterface, LoaiTBRepository>();
             services.AddScoped<ThietBiInterface, ThietBiRepository>();
             services.AddScoped<HocVienInterface, HocVienRepository>();
+            services.AddScoped<KHHLInterface, KHHLRepository>();
+
 
 
 
