@@ -5,12 +5,13 @@ using System.Collections.Generic;
 
 namespace QLDV.Models
 {
-    public partial class Diem
+    public partial class DiemDanh
     {
         public int HocVienId { get; set; }
-        public int Khhlid { get; set; }
-        public double? Diem1 { get; set; }
+        public int LichHlid { get; set; }
+        public int Comat { get; set; }
 
         public virtual HocVien HocVien { get; set; }
+        public virtual LichHl LichHl { get; set; }
     }
 }

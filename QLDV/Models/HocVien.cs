@@ -9,8 +9,9 @@ namespace QLDV.Models
     {
         public HocVien()
         {
-            ChuyenCans = new HashSet<ChuyenCan>();
+            DiemDanhs = new HashSet<DiemDanh>();
             Diems = new HashSet<Diem>();
+            HvKhhls = new HashSet<HvKhhl>();
         }
 
         public int Id { get; set; }
@@ -18,15 +19,13 @@ namespace QLDV.Models
         public DateTime? Ngaysinh { get; set; }
         public string Quequan { get; set; }
         public string CapBac { get; set; }
-        public string ChucVu { get; set; }
-        public string HocHam { get; set; }
-        public string HocVi { get; set; }
         public string Sdt { get; set; }
         public string Cccd { get; set; }
         public int? IdDonVi { get; set; }
 
         public virtual DonVi IdDonViNavigation { get; set; }
-        public virtual ICollection<ChuyenCan> ChuyenCans { get; set; }
+        public virtual ICollection<DiemDanh> DiemDanhs { get; set; }
         public virtual ICollection<Diem> Diems { get; set; }
+        public virtual ICollection<HvKhhl> HvKhhls { get; set; }
     }
 }

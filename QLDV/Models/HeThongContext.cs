@@ -18,11 +18,14 @@ namespace QLDV.Models
         }
 
         public virtual DbSet<CanBo> CanBoes { get; set; }
-        public virtual DbSet<ChuyenCan> ChuyenCans { get; set; }
         public virtual DbSet<Diem> Diems { get; set; }
+        public virtual DbSet<DiemDanh> DiemDanhs { get; set; }
         public virtual DbSet<DonVi> DonVis { get; set; }
         public virtual DbSet<HocVien> HocViens { get; set; }
+        public virtual DbSet<HvKhhl> HvKhhls { get; set; }
         public virtual DbSet<Khhl> Khhls { get; set; }
+        public virtual DbSet<KhhlDv> KhhlDvs { get; set; }
+        public virtual DbSet<LichHl> LichHls { get; set; }
         public virtual DbSet<LoaiDonVi> LoaiDonVis { get; set; }
         public virtual DbSet<LoaiTb> LoaiTbs { get; set; }
         public virtual DbSet<Nhom> Nhoms { get; set; }
@@ -84,34 +87,10 @@ namespace QLDV.Models
                     .HasConstraintName("FK_CanBo_DonVi");
             });
 
-            modelBuilder.Entity<ChuyenCan>(entity =>
-            {
-                entity.HasKey(e => new { e.HocVienId, e.IdKhhl })
-                    .HasName("PK__ChuyenCa__4222BE7C5CA5C9FA");
-
-                entity.ToTable("ChuyenCan");
-
-                entity.Property(e => e.HocVienId).HasColumnName("HocVienID");
-
-                entity.Property(e => e.IdKhhl).HasColumnName("ID_KHHL");
-
-                entity.HasOne(d => d.HocVien)
-                    .WithMany(p => p.ChuyenCans)
-                    .HasForeignKey(d => d.HocVienId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ChuyenCan_HocVien");
-
-                entity.HasOne(d => d.IdKhhlNavigation)
-                    .WithMany(p => p.ChuyenCans)
-                    .HasForeignKey(d => d.IdKhhl)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_ChuyenCan_KHHL");
-            });
-
             modelBuilder.Entity<Diem>(entity =>
             {
                 entity.HasKey(e => new { e.HocVienId, e.Khhlid })
-                    .HasName("PK__Diem__EB0811D7DBC78853");
+                    .HasName("PK__Diem__3F7816F7E9CCF636");
 
                 entity.ToTable("Diem");
 
@@ -126,12 +105,31 @@ namespace QLDV.Models
                     .HasForeignKey(d => d.HocVienId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Diem_HocVien");
+            });
 
-                entity.HasOne(d => d.Khhl)
-                    .WithMany(p => p.Diems)
-                    .HasForeignKey(d => d.Khhlid)
+            modelBuilder.Entity<DiemDanh>(entity =>
+            {
+                entity.HasKey(e => new { e.HocVienId, e.LichHlid });
+
+                entity.ToTable("DiemDanh");
+
+                entity.Property(e => e.HocVienId).HasColumnName("HocVienID");
+
+                entity.Property(e => e.LichHlid).HasColumnName("LichHLid");
+
+                entity.Property(e => e.Comat).HasColumnName("comat");
+
+                entity.HasOne(d => d.HocVien)
+                    .WithMany(p => p.DiemDanhs)
+                    .HasForeignKey(d => d.HocVienId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Diem_KHHL");
+                    .HasConstraintName("FK_DiemDanh_HocVien");
+
+                entity.HasOne(d => d.LichHl)
+                    .WithMany(p => p.DiemDanhs)
+                    .HasForeignKey(d => d.LichHlid)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_DiemDanh_Lich_HL");
             });
 
             modelBuilder.Entity<DonVi>(entity =>
@@ -181,12 +179,6 @@ namespace QLDV.Models
                     .IsUnicode(false)
                     .HasColumnName("CCCD");
 
-                entity.Property(e => e.ChucVu).HasMaxLength(20);
-
-                entity.Property(e => e.HocHam).HasMaxLength(20);
-
-                entity.Property(e => e.HocVi).HasMaxLength(20);
-
                 entity.Property(e => e.Ngaysinh)
                     .HasColumnType("date")
                     .HasColumnName("ngaysinh");
@@ -206,24 +198,111 @@ namespace QLDV.Models
                     .HasConstraintName("FK_HocVien_DonVi");
             });
 
+            modelBuilder.Entity<HvKhhl>(entity =>
+            {
+                entity.HasKey(e => new { e.IdHv, e.IdKhhl });
+
+                entity.ToTable("HV_KHHL");
+
+                entity.Property(e => e.IdHv).HasColumnName("idHV");
+
+                entity.Property(e => e.IdKhhl).HasColumnName("idKHHL");
+
+                entity.HasOne(d => d.IdHvNavigation)
+                    .WithMany(p => p.HvKhhls)
+                    .HasForeignKey(d => d.IdHv)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_HV_KHHL_HocVien");
+
+                entity.HasOne(d => d.IdKhhlNavigation)
+                    .WithMany(p => p.HvKhhls)
+                    .HasForeignKey(d => d.IdKhhl)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_HV_KHHL_KHHL");
+            });
+
             modelBuilder.Entity<Khhl>(entity =>
             {
                 entity.ToTable("KHHL");
 
-                entity.Property(e => e.Id).HasColumnName("ID");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.DonViId).HasColumnName("DonViID");
+                entity.Property(e => e.IdDv).HasColumnName("idDV");
 
-                entity.Property(e => e.NgayLap).HasColumnType("date");
+                entity.Property(e => e.MaKhhl)
+                    .HasMaxLength(20)
+                    .HasColumnName("MaKHHL")
+                    .IsFixedLength(true);
 
-                entity.Property(e => e.TenMonHoc)
-                    .HasMaxLength(30)
-                    .HasColumnName("tenMonHoc");
+                entity.Property(e => e.Ngaylap)
+                    .HasColumnType("date")
+                    .HasColumnName("ngaylap");
 
-                entity.HasOne(d => d.DonVi)
+                entity.Property(e => e.Noidung)
+                    .HasMaxLength(100)
+                    .HasColumnName("noidung");
+
+                entity.Property(e => e.Tgbatdau)
+                    .HasColumnType("date")
+                    .HasColumnName("tgbatdau");
+
+                entity.Property(e => e.Tgketthuc)
+                    .HasColumnType("date")
+                    .HasColumnName("tgketthuc");
+
+                entity.Property(e => e.Tongtiethoc).HasColumnName("tongtiethoc");
+
+                entity.HasOne(d => d.IdDvNavigation)
                     .WithMany(p => p.Khhls)
-                    .HasForeignKey(d => d.DonViId)
-                    .HasConstraintName("FK_KHHL_DonVi");
+                    .HasForeignKey(d => d.IdDv)
+                    .HasConstraintName("FK_KHHL_DonVi2");
+            });
+
+            modelBuilder.Entity<KhhlDv>(entity =>
+            {
+                entity.HasKey(e => new { e.IdDv, e.IdKhhl });
+
+                entity.ToTable("KHHL_DV");
+
+                entity.Property(e => e.IdDv).HasColumnName("idDV");
+
+                entity.Property(e => e.IdKhhl).HasColumnName("idKHHL");
+
+                entity.HasOne(d => d.IdDvNavigation)
+                    .WithMany(p => p.KhhlDvs)
+                    .HasForeignKey(d => d.IdDv)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_KHHL_DV_DonVi");
+
+                entity.HasOne(d => d.IdKhhlNavigation)
+                    .WithMany(p => p.KhhlDvs)
+                    .HasForeignKey(d => d.IdKhhl)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_KHHL_DV_KHHL");
+            });
+
+            modelBuilder.Entity<LichHl>(entity =>
+            {
+                entity.ToTable("Lich_HL");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.IdKhhl).HasColumnName("IdKHHL");
+
+                entity.Property(e => e.Ngay)
+                    .HasColumnType("date")
+                    .HasColumnName("ngay");
+
+                entity.Property(e => e.Tietbatdau).HasColumnName("tietbatdau");
+
+                entity.Property(e => e.Tietketthuc).HasColumnName("tietketthuc");
+
+                entity.Property(e => e.Tongtiethoc).HasColumnName("tongtiethoc");
+
+                entity.HasOne(d => d.IdKhhlNavigation)
+                    .WithMany(p => p.LichHls)
+                    .HasForeignKey(d => d.IdKhhl)
+                    .HasConstraintName("FK_Lich_HL_KHHL");
             });
 
             modelBuilder.Entity<LoaiDonVi>(entity =>
