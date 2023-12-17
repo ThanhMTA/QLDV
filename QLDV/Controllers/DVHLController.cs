@@ -46,7 +46,7 @@ namespace QLDV.Controllers
             }
         }
         [HttpDelete("{khhl}/{dv}")]
-        public IActionResult Delete(int khhl,int dv)
+        public IActionResult Delete(int khhl,string dv)
         {
             try
             {

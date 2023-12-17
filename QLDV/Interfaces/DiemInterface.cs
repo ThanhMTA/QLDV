@@ -9,6 +9,6 @@ namespace QLDV.Interfaces
     public interface DiemInterface
     {
         List<HocVienView> GetAll(int khhl,string dv );
-        void Update(HocVienView loai);
+        void Update(DiemView loai);
     }
 }

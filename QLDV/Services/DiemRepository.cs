@@ -25,7 +25,10 @@ namespace QLDV.Services
                     .Where(lo => lo.Ten == dv)
                     .Select(lo => lo.Id)
                     .SingleOrDefault();
-            var loais = _context.DiemHVs.FromSqlRaw($"GetAllDiemHV {idDV},{khhl}").ToList();
+            var loais = _context.Diems
+            .FromSqlRaw($"EXEC GetAllDiemHV {idDV}, {khhl}" )
+            .ToList();
+   
 
             foreach (var subUnit in loais)
             {
@@ -33,14 +36,32 @@ namespace QLDV.Services
 
                 subordinates.Add(new HocVienView
                 {
-                    Id = subUnit.Id,
-                    Ten = subUnit.Ten,
-                    Ngaysinh = subUnit.Ngaysinh,
-                    Quequan = subUnit.Quequan,
-                    CapBac = subUnit.CapBac,
-                    Sdt = subUnit.Sdt,
-                    Cccd = subUnit.Cccd,
-                    Diem=subUnit.Diem
+                    Id = subUnit.HocVienId,
+                    Ten = _context.HocViens
+                    .Where(lo => lo.Id == subUnit.HocVienId)
+                    .Select(lo => lo.Ten)
+                    .SingleOrDefault(),
+                    Ngaysinh = _context.HocViens
+                    .Where(lo => lo.Id == subUnit.HocVienId)
+                    .Select(lo => lo.Ngaysinh)
+                    .SingleOrDefault(),
+                    Quequan = _context.HocViens
+                    .Where(lo => lo.Id == subUnit.HocVienId)
+                    .Select(lo => lo.Quequan)
+                    .SingleOrDefault(),
+                   CapBac= _context.HocViens
+                    .Where(lo => lo.Id == subUnit.HocVienId)
+                    .Select(lo => lo.CapBac)
+                    .SingleOrDefault(),
+                    Sdt = _context.HocViens
+                    .Where(lo => lo.Id == subUnit.HocVienId)
+                    .Select(lo => lo.Sdt)
+                    .SingleOrDefault(),
+                   Cccd = _context.HocViens
+                    .Where(lo => lo.Id == subUnit.HocVienId)
+                    .Select(lo => lo.Cccd)
+                    .SingleOrDefault(),
+                    Diem = subUnit.Diem1
                 });
 
 
@@ -48,9 +69,12 @@ namespace QLDV.Services
             }
             return subordinates;
         }
-        public void Update(HocVienView loai)
+        public void Update(DiemView loai)
         {
-            throw new NotImplementedException();
+            var hv = loai.HocVienId;
+            var khhl = loai.Khhlid;
+            var diem = loai.Diem1;
+            _context.Database.ExecuteSqlInterpolated($"GetUpdateDiemHV {hv}, {khhl},{diem}");
         }
     }
 }

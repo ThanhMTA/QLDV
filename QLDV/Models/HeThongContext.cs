@@ -250,6 +250,8 @@ namespace QLDV.Models
                     .HasColumnType("date")
                     .HasColumnName("tgketthuc");
 
+                entity.Property(e => e.Tongnbuoihoc).HasColumnName("tongnbuoihoc");
+
                 entity.Property(e => e.Tongtiethoc).HasColumnName("tongtiethoc");
 
                 entity.HasOne(d => d.IdDvNavigation)

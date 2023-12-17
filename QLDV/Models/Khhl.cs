@@ -22,6 +22,7 @@ namespace QLDV.Models
         public DateTime? Ngaylap { get; set; }
         public string MaKhhl { get; set; }
         public int? IdDv { get; set; }
+        public int? Tongnbuoihoc { get; set; }
 
         public virtual DonVi IdDvNavigation { get; set; }
         public virtual ICollection<HvKhhl> HvKhhls { get; set; }

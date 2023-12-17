@@ -11,7 +11,7 @@ namespace QLDV.Interfaces
         List<DVHLView> GetAll(int khhl);
         List<HocVienView> Filter(string dv);
         void Add(DVHLView loai);
-        void Delete(int khhl, int dv);
+        void Delete(int khhl, string dv);
         List<DVHLView> Search(string search, int khhl);
     }
 }

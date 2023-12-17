@@ -25,13 +25,17 @@ namespace QLDV.Services
                     .SingleOrDefault();
             var khhl = loai.IdKhhl;
 
-            _context.Database.ExecuteSqlInterpolated($"exec  AddDVHL {khhl},{dv}");
+            _context.Database.ExecuteSqlInterpolated($"exec  AddDVHL {dv},{khhl}");
 
         }
 
-        public void Delete(int khhl, int dv)
+        public void Delete(int khhl, string dv)
         {
-            _context.Database.ExecuteSqlInterpolated($"exec  DeleteDVHL {khhl},{dv}");
+            var iddv = _context.DonVis
+                    .Where(lo => lo.Ten == dv)
+                    .Select(lo => lo.Id)
+                    .SingleOrDefault();
+            _context.Database.ExecuteSqlInterpolated($"exec  DeleteDVHL {khhl},{iddv}");
 
         }
 
