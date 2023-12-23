@@ -18,24 +18,22 @@ namespace QLDV.Models
         }
 
         public virtual DbSet<CanBo> CanBoes { get; set; }
+        public virtual DbSet<ChucNang> ChucNangs { get; set; }
         public virtual DbSet<Diem> Diems { get; set; }
         public virtual DbSet<DiemDanh> DiemDanhs { get; set; }
         public virtual DbSet<DonVi> DonVis { get; set; }
         public virtual DbSet<HocVien> HocViens { get; set; }
-        public virtual DbSet<HvKhhl> HvKhhls { get; set; }
         public virtual DbSet<Khhl> Khhls { get; set; }
         public virtual DbSet<KhhlDv> KhhlDvs { get; set; }
         public virtual DbSet<LichHl> LichHls { get; set; }
         public virtual DbSet<LoaiDonVi> LoaiDonVis { get; set; }
         public virtual DbSet<LoaiTb> LoaiTbs { get; set; }
-        public virtual DbSet<Nhom> Nhoms { get; set; }
         public virtual DbSet<NhomTb> NhomTbs { get; set; }
-        public virtual DbSet<NhomTk> NhomTks { get; set; }
+        public virtual DbSet<QCn> QCns { get; set; }
         public virtual DbSet<Quyen> Quyens { get; set; }
-        public virtual DbSet<QuyenNhom> QuyenNhoms { get; set; }
-        public virtual DbSet<QuyenTk> QuyenTks { get; set; }
         public virtual DbSet<TaiKhoan> TaiKhoans { get; set; }
         public virtual DbSet<ThietBi> ThietBis { get; set; }
+        public virtual DbSet<Tkdiem> Tkdiems { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -87,10 +85,21 @@ namespace QLDV.Models
                     .HasConstraintName("FK_CanBo_DonVi");
             });
 
+            modelBuilder.Entity<ChucNang>(entity =>
+            {
+                entity.ToTable("ChucNang");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Ten)
+                    .HasMaxLength(10)
+                    .HasColumnName("ten");
+            });
+
             modelBuilder.Entity<Diem>(entity =>
             {
                 entity.HasKey(e => new { e.HocVienId, e.Khhlid })
-                    .HasName("PK__Diem__3F7816F7E9CCF636");
+                    .HasName("PK__Diem__3F7816F777879B20");
 
                 entity.ToTable("Diem");
 
@@ -179,6 +188,8 @@ namespace QLDV.Models
                     .IsUnicode(false)
                     .HasColumnName("CCCD");
 
+                entity.Property(e => e.Gioitinh).HasMaxLength(20);
+
                 entity.Property(e => e.Ngaysinh)
                     .HasColumnType("date")
                     .HasColumnName("ngaysinh");
@@ -198,29 +209,6 @@ namespace QLDV.Models
                     .HasConstraintName("FK_HocVien_DonVi");
             });
 
-            modelBuilder.Entity<HvKhhl>(entity =>
-            {
-                entity.HasKey(e => new { e.IdHv, e.IdKhhl });
-
-                entity.ToTable("HV_KHHL");
-
-                entity.Property(e => e.IdHv).HasColumnName("idHV");
-
-                entity.Property(e => e.IdKhhl).HasColumnName("idKHHL");
-
-                entity.HasOne(d => d.IdHvNavigation)
-                    .WithMany(p => p.HvKhhls)
-                    .HasForeignKey(d => d.IdHv)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_HV_KHHL_HocVien");
-
-                entity.HasOne(d => d.IdKhhlNavigation)
-                    .WithMany(p => p.HvKhhls)
-                    .HasForeignKey(d => d.IdKhhl)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_HV_KHHL_KHHL");
-            });
-
             modelBuilder.Entity<Khhl>(entity =>
             {
                 entity.ToTable("KHHL");
@@ -228,6 +216,8 @@ namespace QLDV.Models
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.IdDv).HasColumnName("idDV");
+
+                entity.Property(e => e.IdKhcha).HasColumnName("idKHCha");
 
                 entity.Property(e => e.MaKhhl)
                     .HasMaxLength(20)
@@ -258,6 +248,11 @@ namespace QLDV.Models
                     .WithMany(p => p.Khhls)
                     .HasForeignKey(d => d.IdDv)
                     .HasConstraintName("FK_KHHL_DonVi2");
+
+                entity.HasOne(d => d.IdKhchaNavigation)
+                    .WithMany(p => p.InverseIdKhchaNavigation)
+                    .HasForeignKey(d => d.IdKhcha)
+                    .HasConstraintName("FK_KHHL_KHHL");
             });
 
             modelBuilder.Entity<KhhlDv>(entity =>
@@ -340,17 +335,6 @@ namespace QLDV.Models
                     .HasConstraintName("FK_LoaiTB_NhomTB");
             });
 
-            modelBuilder.Entity<Nhom>(entity =>
-            {
-                entity.ToTable("Nhom");
-
-                entity.Property(e => e.Id).HasColumnName("ID");
-
-                entity.Property(e => e.Ten)
-                    .HasMaxLength(20)
-                    .HasColumnName("ten");
-            });
-
             modelBuilder.Entity<NhomTb>(entity =>
             {
                 entity.ToTable("NhomTB");
@@ -360,25 +344,27 @@ namespace QLDV.Models
                 entity.Property(e => e.TenNhom).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<NhomTk>(entity =>
+            modelBuilder.Entity<QCn>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.IdCn, e.IdQuyen });
 
-                entity.ToTable("Nhom_TK");
+                entity.ToTable("Q_CN");
 
-                entity.Property(e => e.IdNhom).HasColumnName("idNhom");
+                entity.Property(e => e.IdCn).HasColumnName("idCN");
 
-                entity.Property(e => e.IdTk).HasColumnName("idTK");
+                entity.Property(e => e.IdQuyen).HasColumnName("idQuyen");
 
-                entity.HasOne(d => d.IdNhomNavigation)
-                    .WithMany()
-                    .HasForeignKey(d => d.IdNhom)
-                    .HasConstraintName("FK_Nhom_TK_Nhom");
+                entity.HasOne(d => d.IdCnNavigation)
+                    .WithMany(p => p.QCns)
+                    .HasForeignKey(d => d.IdCn)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Q_CN_ChucNang");
 
-                entity.HasOne(d => d.IdTkNavigation)
-                    .WithMany()
-                    .HasForeignKey(d => d.IdTk)
-                    .HasConstraintName("FK_Nhom_TK_TaiKhoan");
+                entity.HasOne(d => d.IdQuyenNavigation)
+                    .WithMany(p => p.QCns)
+                    .HasForeignKey(d => d.IdQuyen)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Q_CN_Quyen");
             });
 
             modelBuilder.Entity<Quyen>(entity =>
@@ -392,48 +378,6 @@ namespace QLDV.Models
                     .HasColumnName("ten");
             });
 
-            modelBuilder.Entity<QuyenNhom>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("Quyen_nhom");
-
-                entity.Property(e => e.IdNhom).HasColumnName("idNhom");
-
-                entity.Property(e => e.IdQuyen).HasColumnName("idQuyen");
-
-                entity.HasOne(d => d.IdNhomNavigation)
-                    .WithMany()
-                    .HasForeignKey(d => d.IdNhom)
-                    .HasConstraintName("FK_Quyen_nhom_Nhom");
-
-                entity.HasOne(d => d.IdQuyenNavigation)
-                    .WithMany()
-                    .HasForeignKey(d => d.IdQuyen)
-                    .HasConstraintName("FK_Quyen_nhom_Quyen");
-            });
-
-            modelBuilder.Entity<QuyenTk>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("Quyen_TK");
-
-                entity.Property(e => e.IdQuyen).HasColumnName("idQuyen");
-
-                entity.Property(e => e.IdTk).HasColumnName("idTK");
-
-                entity.HasOne(d => d.IdQuyenNavigation)
-                    .WithMany()
-                    .HasForeignKey(d => d.IdQuyen)
-                    .HasConstraintName("FK_Quyen_TK_Quyen");
-
-                entity.HasOne(d => d.IdTkNavigation)
-                    .WithMany()
-                    .HasForeignKey(d => d.IdTk)
-                    .HasConstraintName("FK_Quyen_TK_TaiKhoan");
-            });
-
             modelBuilder.Entity<TaiKhoan>(entity =>
             {
                 entity.ToTable("TaiKhoan");
@@ -441,6 +385,8 @@ namespace QLDV.Models
                 entity.Property(e => e.Id).HasColumnName("ID");
 
                 entity.Property(e => e.IdCb).HasColumnName("idCB");
+
+                entity.Property(e => e.IdQuyen).HasColumnName("idQuyen");
 
                 entity.Property(e => e.Mk)
                     .HasMaxLength(20)
@@ -455,6 +401,11 @@ namespace QLDV.Models
                     .WithMany(p => p.TaiKhoans)
                     .HasForeignKey(d => d.IdCb)
                     .HasConstraintName("FK_TaiKhoan_CanBo");
+
+                entity.HasOne(d => d.IdQuyenNavigation)
+                    .WithMany(p => p.TaiKhoans)
+                    .HasForeignKey(d => d.IdQuyen)
+                    .HasConstraintName("FK_TaiKhoan_Quyen");
             });
 
             modelBuilder.Entity<ThietBi>(entity =>
@@ -484,6 +435,23 @@ namespace QLDV.Models
                     .WithMany(p => p.ThietBis)
                     .HasForeignKey(d => d.IdLoaiTb)
                     .HasConstraintName("FK_ThieBi_LoaiTB");
+            });
+
+            modelBuilder.Entity<Tkdiem>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("TKDiem");
+
+                entity.Property(e => e.IdDv).HasColumnName("idDv");
+
+                entity.Property(e => e.IdDvcha).HasColumnName("idDVcha");
+
+                entity.Property(e => e.MaKhhl).HasColumnName("MaKHHL");
+
+                entity.Property(e => e.TenKhhl)
+                    .HasMaxLength(100)
+                    .HasColumnName("TenKHHL");
             });
 
             OnModelCreatingPartial(modelBuilder);

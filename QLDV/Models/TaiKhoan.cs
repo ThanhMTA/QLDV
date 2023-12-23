@@ -11,7 +11,9 @@ namespace QLDV.Models
         public string TenTk { get; set; }
         public string Mk { get; set; }
         public int? IdCb { get; set; }
+        public int? IdQuyen { get; set; }
 
         public virtual CanBo IdCbNavigation { get; set; }
+        public virtual Quyen IdQuyenNavigation { get; set; }
     }
 }

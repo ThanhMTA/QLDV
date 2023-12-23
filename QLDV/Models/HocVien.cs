@@ -11,7 +11,6 @@ namespace QLDV.Models
         {
             DiemDanhs = new HashSet<DiemDanh>();
             Diems = new HashSet<Diem>();
-            HvKhhls = new HashSet<HvKhhl>();
         }
 
         public int Id { get; set; }
@@ -22,10 +21,10 @@ namespace QLDV.Models
         public string Sdt { get; set; }
         public string Cccd { get; set; }
         public int? IdDonVi { get; set; }
+        public string Gioitinh { get; set; }
 
         public virtual DonVi IdDonViNavigation { get; set; }
         public virtual ICollection<DiemDanh> DiemDanhs { get; set; }
         public virtual ICollection<Diem> Diems { get; set; }
-        public virtual ICollection<HvKhhl> HvKhhls { get; set; }
     }
 }

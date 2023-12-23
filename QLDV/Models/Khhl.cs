@@ -9,7 +9,7 @@ namespace QLDV.Models
     {
         public Khhl()
         {
-            HvKhhls = new HashSet<HvKhhl>();
+            InverseIdKhchaNavigation = new HashSet<Khhl>();
             KhhlDvs = new HashSet<KhhlDv>();
             LichHls = new HashSet<LichHl>();
         }
@@ -23,9 +23,11 @@ namespace QLDV.Models
         public string MaKhhl { get; set; }
         public int? IdDv { get; set; }
         public int? Tongnbuoihoc { get; set; }
+        public int? IdKhcha { get; set; }
 
         public virtual DonVi IdDvNavigation { get; set; }
-        public virtual ICollection<HvKhhl> HvKhhls { get; set; }
+        public virtual Khhl IdKhchaNavigation { get; set; }
+        public virtual ICollection<Khhl> InverseIdKhchaNavigation { get; set; }
         public virtual ICollection<KhhlDv> KhhlDvs { get; set; }
         public virtual ICollection<LichHl> LichHls { get; set; }
     }

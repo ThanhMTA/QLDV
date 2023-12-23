@@ -10,6 +10,8 @@ namespace QLDV.Interfaces
     {
         List<KHHLView> GetAll();
         List<KHHLView> GetID(int id);
+        List<KHHLView> GetCon(int id);
+
         List<KHHLView> Filter(int idDV);
         void Add(KHHLView loai);
         void Update(KHHLView loai);

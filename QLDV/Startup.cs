@@ -52,6 +52,12 @@ namespace QLDV
             services.AddScoped<DVHLInterface, DVHLRepository>();
             services.AddScoped<LICHHLInterface, LICHHLRepository>();
             services.AddScoped<DiemInterface, DiemRepository>();
+            services.AddScoped<TaiKhoanInterface, TaiKhoanRepository>();
+
+            services.AddScoped<TKInterface, TKrepository>();
+
+            services.AddScoped<DiemDanhInterface, DiemDanhRepository>();
+
 
 
 

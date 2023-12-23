@@ -57,6 +57,18 @@ namespace QLDV.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
+        [HttpGet("Con/{id}")]
+        public IActionResult GetCon(int id)
+        {
+            try
+            {
+                return Ok(_KHHLRepository.GetCon(id));
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
         [HttpPut("{id}")]
         public IActionResult Update(int id, KHHLView loai)
         {

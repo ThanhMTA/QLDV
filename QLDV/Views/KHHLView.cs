@@ -12,8 +12,11 @@ namespace QLDV.Views
         public DateTime? Tgbatdau { get; set; }
         public DateTime? Tgketthuc { get; set; }
         public double? Tongtiethoc { get; set; }
+        public int? Tongnbuoihoc { get; set; }
         public DateTime? Ngaylap { get; set; }
         public string MaKhhl { get; set; }
         public string DonVi{ get; set; }
-     }
+        public string  Khcha { get; set; }
+
+    }
 }

@@ -24,14 +24,18 @@ namespace QLDV.Services
             var noidung = TB.Noidung;
             var tgbatdau = TB.Tgbatdau;
             var tgKetThuc = TB.Tgketthuc;
-            var sotiet = TB.Tongtiethoc;
+            //var sotiet = TB.Tongtiethoc;
             var ngayLap = TB.Ngaylap;
             var idDonVi = _context.DonVis
                      .Where(lo => lo.Ten == TB.DonVi)
                      .Select(lo => lo.Id)
                      .SingleOrDefault();
+            var idKHCha = _context.Khhls
+                .Where(lo => lo.Noidung == TB.Khcha)
+                .Select(lo => (int?)lo.Id)
+                .SingleOrDefault();
 
-            _context.Database.ExecuteSqlInterpolated($"exec  AddKHHL {ma},{noidung},{tgbatdau}, {tgKetThuc},{sotiet},{ngayLap},{idDonVi}");
+            _context.Database.ExecuteSqlInterpolated($"exec  AddKHHL {ma},{noidung},{tgbatdau}, {tgKetThuc},{ngayLap},{idDonVi},{idKHCha}");
         }
         #endregion
         #region delete 
@@ -61,10 +65,15 @@ namespace QLDV.Services
                     Tgbatdau=subUnit.Tgbatdau, 
                     Tgketthuc=subUnit.Tgketthuc,
                     Tongtiethoc=subUnit.Tongtiethoc,
+                    Tongnbuoihoc=subUnit.Tongnbuoihoc,
                     Ngaylap=subUnit.Ngaylap,
                     DonVi = _context.DonVis
                     .Where(lo => lo.Id == subUnit.IdDv)
                     .Select(lo => lo.Ten)
+                    .SingleOrDefault(),
+                    Khcha = _context.Khhls
+                    .Where(lo => lo.Id == subUnit.IdKhcha)
+                    .Select(lo => lo.Noidung)
                     .SingleOrDefault()
                 });
 
@@ -92,10 +101,51 @@ namespace QLDV.Services
                     Tgbatdau = subUnit.Tgbatdau,
                     Tgketthuc = subUnit.Tgketthuc,
                     Tongtiethoc = subUnit.Tongtiethoc,
+                    Tongnbuoihoc = subUnit.Tongnbuoihoc,
                     Ngaylap = subUnit.Ngaylap,
                     DonVi = _context.DonVis
                     .Where(lo => lo.Id == subUnit.IdDv)
                     .Select(lo => lo.Ten)
+                    .SingleOrDefault(),
+                    Khcha = _context.Khhls
+                    .Where(lo => lo.Id == subUnit.IdKhcha)
+                    .Select(lo => lo.Noidung)
+                    .SingleOrDefault()
+                });
+
+
+
+            }
+            return subordinates;
+        }
+        public List<KHHLView> GetCon(int id)
+        {
+            var subordinates = new List<KHHLView>();
+
+
+            var loais = _context.Khhls.FromSqlRaw("ListChildKHHL {0}", id).ToList();
+
+            foreach (var subUnit in loais)
+            {
+
+
+                subordinates.Add(new KHHLView
+                {
+                    Id = subUnit.Id,
+                    MaKhhl = subUnit.MaKhhl,
+                    Noidung = subUnit.Noidung,
+                    Tgbatdau = subUnit.Tgbatdau,
+                    Tgketthuc = subUnit.Tgketthuc,
+                    Tongtiethoc = subUnit.Tongtiethoc,
+                    Tongnbuoihoc = subUnit.Tongnbuoihoc,
+                    Ngaylap = subUnit.Ngaylap,
+                    DonVi = _context.DonVis
+                    .Where(lo => lo.Id == subUnit.IdDv)
+                    .Select(lo => lo.Ten)
+                    .SingleOrDefault(),
+                    Khcha = _context.Khhls
+                    .Where(lo => lo.Id == subUnit.IdKhcha)
+                    .Select(lo => lo.Noidung)
                     .SingleOrDefault()
                 });
 
@@ -125,10 +175,16 @@ namespace QLDV.Services
                     Tgbatdau = subUnit.Tgbatdau,
                     Tgketthuc = subUnit.Tgketthuc,
                     Tongtiethoc = subUnit.Tongtiethoc,
+                    Tongnbuoihoc = subUnit.Tongnbuoihoc,
+
                     Ngaylap = subUnit.Ngaylap,
                     DonVi = _context.DonVis
                     .Where(lo => lo.Id == subUnit.IdDv)
                     .Select(lo => lo.Ten)
+                    .SingleOrDefault(),
+                    Khcha = _context.Khhls
+                    .Where(lo => lo.Id == subUnit.IdKhcha)
+                    .Select(lo => lo.Noidung)
                     .SingleOrDefault()
                 });
 
@@ -161,10 +217,15 @@ namespace QLDV.Services
                     Tgbatdau = subUnit.Tgbatdau,
                     Tgketthuc = subUnit.Tgketthuc,
                     Tongtiethoc = subUnit.Tongtiethoc,
+                    Tongnbuoihoc = subUnit.Tongnbuoihoc,
                     Ngaylap = subUnit.Ngaylap,
                     DonVi = _context.DonVis
                     .Where(lo => lo.Id == subUnit.IdDv)
                     .Select(lo => lo.Ten)
+                    .SingleOrDefault(),
+                    Khcha = _context.Khhls
+                    .Where(lo => lo.Id == subUnit.IdKhcha)
+                    .Select(lo => lo.Noidung)
                     .SingleOrDefault()
                 });
 
@@ -184,13 +245,17 @@ namespace QLDV.Services
             var noidung = TB.Noidung;
             var tgbatdau = TB.Tgbatdau;
             var tgKetThuc = TB.Tgketthuc;
-            var sotiet = TB.Tongtiethoc;
+            //var sotiet = TB.Tongtiethoc;
             var ngayLap = TB.Ngaylap;
             var idDonVi = _context.DonVis
                      .Where(lo => lo.Ten == TB.DonVi)
                      .Select(lo => lo.Id)
                      .SingleOrDefault();
-            _context.Database.ExecuteSqlInterpolated($"UpdateKHHL {id}, {ma},{noidung},{tgbatdau}, {tgKetThuc},{sotiet},{ngayLap},{idDonVi}");
+            var idKhcha = _context.Khhls
+                   .Where(lo => lo.Noidung == TB.Khcha)
+                   .Select(lo => lo.Id)
+                   .SingleOrDefault();
+            _context.Database.ExecuteSqlInterpolated($"UpdateKHHL {id}, {ma},{noidung},{tgbatdau}, {tgKetThuc},{ngayLap},{idDonVi},{idKhcha}");
         }
         #endregion
 
